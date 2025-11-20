@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+		<ProjectReference Include="..\ownerMicroservice.Application\ownerMicroservice.Application.csproj" />
+		<ProjectReference Include="..\ownerMicroservice.Domain\ownerMicroservice.Domain.csproj" />
+		<ProjectReference Include="..\ownerMicroservice.Infrastructure\ownerMicroservice.Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>
