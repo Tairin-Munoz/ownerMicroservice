@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.Authorization;
 using ownerMicroservice.Application.Services;
 using ownerMicroservice.Domain.Services;
 using ownerMicroservice.DTOs;
@@ -19,6 +21,7 @@ public class OwnerController : ControllerBase
     }
 
     // CREATE
+    //[Authorize(Roles = "Manager")]
     [HttpPost("insert")]
     [ProducesResponseType(typeof(SuccessResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status400BadRequest)]
@@ -56,6 +59,7 @@ public class OwnerController : ControllerBase
     }
 
     // READ ALL
+    //[Authorize(Roles = "Manager")]
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ownerMicroservice.Domain.Entities.Owner>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Select()
@@ -65,7 +69,9 @@ public class OwnerController : ControllerBase
     }
 
     // READ BY ID
+    //[Authorize(Roles = "Manager")]
     [HttpGet("{id}")]
+
     [ProducesResponseType(typeof(ownerMicroservice.Domain.Entities.Owner), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int id)
@@ -76,6 +82,7 @@ public class OwnerController : ControllerBase
     }
 
     // UPDATE
+    //[Authorize(Roles = "Manager")]
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(SuccessResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status400BadRequest)]
@@ -115,6 +122,7 @@ public class OwnerController : ControllerBase
     }
 
     // DELETE (soft-delete)
+    //[Authorize(Roles = "Manager")]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
