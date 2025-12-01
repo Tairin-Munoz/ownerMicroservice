@@ -22,7 +22,7 @@ public class OwnerController : ControllerBase
 
     // CREATE
     //[Authorize(Roles = "Manager")]
-    [HttpPost("insert")]
+    [HttpPost("create")]
     [ProducesResponseType(typeof(SuccessResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Insert([FromBody] CreateOwnerDto dto, [FromHeader(Name = "User-Id")] int userId)
