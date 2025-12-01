@@ -1,0 +1,13 @@
+# Caddyfile
+
+# Bloque para la API
+:80 {
+    
+    handle_path /owners/* {
+        reverse_proxy owner-api:8080
+    }
+
+    handle_path /technicians/* {
+        reverse_proxy technician-api:8080
+    }
+}

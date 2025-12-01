@@ -1,0 +1,36 @@
+services:
+  owner-api:
+    build:
+      context: .
+      dockerfile: ownerMicroservice/ownerMicroserviceAPI/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+    restart: always
+
+
+  technician-api:
+    build:
+      context: .
+      dockerfile: technicianMicroservice/technicianMicroserviceAPI/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+    restart: always
+
+
+  # El Proxy Caddy
+  caddy:
+    image: docker.io/caddy:latest
+    restart: always
+    ports:
+      - "80:80" 
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - owner-api
+      - technician-api
+
+volumes:
+  caddy_data:
+  caddy_config:
