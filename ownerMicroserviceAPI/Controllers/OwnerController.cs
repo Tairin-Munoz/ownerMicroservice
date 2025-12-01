@@ -118,17 +118,17 @@ public class OwnerController : ControllerBase
     }
 
     [Authorize(Roles = "Manager")]
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteById(int id)
+    public async Task<IActionResult> DeleteById(int id, [FromHeader] int userId)
     {
         var existing = await _ownerService.GetById(id);
         if (existing == null) return NotFound(new { message = $"Dueño con ID {id} no encontrado" });
 
-        var success = await _ownerService.DeleteById(id, 0);
-        if (!success) return NotFound(new { message = "Dueño no encontrado o ya está inactivo" });
+        var success = await _ownerService.DeleteById(id, userId);
+        if (!success) return NotFound(new { message = "Error al eliminar al dueño" });
 
-        return Ok(new { message = "Dueño desactivado exitosamente" });
+        return Ok(new { message = "Dueño eliminado exitosamente" });
     }
 }
