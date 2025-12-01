@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using ownerMicroservice.Application.Services;
 using ownerMicroservice.Domain.Services;
 using ownerMicroservice.DTOs;
@@ -20,8 +20,7 @@ public class OwnerController : ControllerBase
         _validator = validator;
     }
 
-    // CREATE
-    //[Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager")]
     [HttpPost("create")]
     [ProducesResponseType(typeof(SuccessResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status400BadRequest)]
@@ -58,8 +57,7 @@ public class OwnerController : ControllerBase
             new SuccessResponse { Message = "Dueño creado exitosamente", Id = owner.Id });
     }
 
-    // READ ALL
-    //[Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager")]
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<ownerMicroservice.Domain.Entities.Owner>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Select()
@@ -68,10 +66,8 @@ public class OwnerController : ControllerBase
         return Ok(owners);
     }
 
-    // READ BY ID
-    //[Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager")]
     [HttpGet("{id}")]
-
     [ProducesResponseType(typeof(ownerMicroservice.Domain.Entities.Owner), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int id)
@@ -81,16 +77,16 @@ public class OwnerController : ControllerBase
         return Ok(owner);
     }
 
-    // UPDATE
-    //[Authorize(Roles = "Manager")]
-    [HttpPut("{id}")]
+    [Authorize(Roles = "Manager")]
+    [HttpPut()]
     [ProducesResponseType(typeof(SuccessResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateOwnerDto dto)
+    public async Task<IActionResult> Update([FromBody] UpdateOwnerDto dto, [FromHeader] int userId)
     {
         var existing = await _ownerService.GetById(id);
-        if (existing == null) return NotFound(new { message = $"Dueño con ID {id} no encontrado" });
+        if (existing == null) 
+          return NotFound(new { message = $"Dueño con ID {id} no encontrado" });
 
         var owner = new ownerMicroservice.Domain.Entities.Owner
         {
@@ -115,14 +111,13 @@ public class OwnerController : ControllerBase
             });
         }
 
-        var success = await _ownerService.Update(owner, 0);
+        var success = await _ownerService.Update(owner, userId);
         if (!success) return StatusCode(500, new { message = "Error al actualizar el dueño" });
 
         return Ok(new SuccessResponse { Message = "Dueño actualizado exitosamente", Id = id });
     }
 
-    // DELETE (soft-delete)
-    //[Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager")]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
