@@ -1,6 +1,6 @@
 using System.Text;
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using ownerMicroservice.Application.Services;
 using ownerMicroservice.Domain.Ports;
 using ownerMicroservice.Domain.Services;
@@ -22,7 +22,7 @@ builder.Services.AddScoped<IDbConnectionFactory, PostgreSqlConnection>();
 // Inyección de Validadores
 builder.Services.AddScoped<IValidator<ownerMicroservice.Domain.Entities.Owner>, OwnerValidator>();
 
-/*#region Authentication
+#region Authentication
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"];
@@ -40,15 +40,15 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
+            ValidIssuer = jwtSettings["ValidIssuer"],
+            ValidAudience = jwtSettings["ValidAudience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
         };
     });
 
 builder.Services.AddAuthorization();
 
-#endregion*/
+#endregion
 
 
 builder.Services.AddControllers();
