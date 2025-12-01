@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using ownerMicroservice.Application.Services;
+using ownerMicroservice.Domain.Entities;
 using ownerMicroservice.Domain.Services;
 using ownerMicroservice.DTOs;
 
@@ -24,7 +24,7 @@ public class OwnerController : ControllerBase
     [HttpPost("create")]
     [ProducesResponseType(typeof(SuccessResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Insert([FromBody] CreateOwnerDto dto, [FromHeader(Name = "User-Id")] int userId)
+    public async Task<IActionResult> Insert([FromBody] CreateOwnerDto dto, [FromHeader(Name = "userId")] int userId)
     {
         var owner = new ownerMicroservice.Domain.Entities.Owner
         {
@@ -48,8 +48,7 @@ public class OwnerController : ControllerBase
             });
         }
 
-        // Sin manejo de usuarios por ahora: userId fijo en 0
-        var created = await _ownerService.Create(owner, 0);
+        var created = await _ownerService.Create(owner, userId);
         if (!created) return StatusCode(500, new { message = "Error al crear el dueño" });
 
         return CreatedAtAction(nameof(GetById),
@@ -82,24 +81,11 @@ public class OwnerController : ControllerBase
     [ProducesResponseType(typeof(SuccessResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update([FromBody] UpdateOwnerDto dto, [FromHeader] int userId)
+    public async Task<IActionResult> Update([FromBody] Owner owner, [FromHeader] int userId)
     {
-        var existing = await _ownerService.GetById(id);
+        var existing = await _ownerService.GetById(owner.Id);
         if (existing == null) 
-          return NotFound(new { message = $"Dueño con ID {id} no encontrado" });
-
-        var owner = new ownerMicroservice.Domain.Entities.Owner
-        {
-            Id = id,
-            Name = dto.Name,
-            FirstLastname = dto.FirstLastname,
-            SecondLastname = dto.SecondLastname,
-            PhoneNumber = dto.PhoneNumber,
-            Email = dto.Email,
-            DocumentNumber = dto.DocumentNumber,
-            DocumentExtension = dto.DocumentExtension,
-            Address = dto.Address
-        };
+          return NotFound(new { message = $"Dueño con ID {owner.Id} no encontrado" });
 
         var validation = _validator.Validate(owner);
         if (validation.IsFailure)
@@ -114,7 +100,7 @@ public class OwnerController : ControllerBase
         var success = await _ownerService.Update(owner, userId);
         if (!success) return StatusCode(500, new { message = "Error al actualizar el dueño" });
 
-        return Ok(new SuccessResponse { Message = "Dueño actualizado exitosamente", Id = id });
+        return Ok(new SuccessResponse { Message = "Dueño actualizado exitosamente", Id = owner.Id });
     }
 
     [Authorize(Roles = "Manager")]
