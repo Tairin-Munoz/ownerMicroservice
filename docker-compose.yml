@@ -1,8 +1,8 @@
 services:
   owner-api:
     build:
-      context: .
-      dockerfile: ownerMicroservice/ownerMicroserviceAPI/Dockerfile
+      context: ./ownerMicroservice
+      dockerfile: ownerMicroserviceAPI/Dockerfile
     environment:
       - ASPNETCORE_URLS=http://+:8080
     restart: always
@@ -10,8 +10,8 @@ services:
 
   technician-api:
     build:
-      context: .
-      dockerfile: technicianMicroservice/technicianMicroserviceAPI/Dockerfile
+      context: ./technicianMicroservice
+      dockerfile: technicianMicroserviceAPI/Dockerfile
     environment:
       - ASPNETCORE_URLS=http://+:8080
     restart: always
