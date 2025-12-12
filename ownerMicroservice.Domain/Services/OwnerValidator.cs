@@ -79,10 +79,10 @@ public class OwnerValidator : IValidator<Owner>
         ProhibitDangerousChars(lastName, "apellido materno", errors);
     }
 
-    private static void ValidatePhoneNumber(int phone, List<string> errors)
+    private static void ValidatePhoneNumber(string phone, List<string> errors)
     {
         // Bolivia: exactamente 8 dígitos
-        if (phone <= 0)
+        if (phone == "")
         {
             errors.Add("El teléfono es requerido.");
             return;
